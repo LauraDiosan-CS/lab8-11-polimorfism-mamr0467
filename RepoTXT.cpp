@@ -2,7 +2,7 @@
 
 //Desc: creeaza un obiect nou de tip RepoTXT
 //In: -
-//Out: un obiect nou de tip RepoFile cu valori implicte
+//Out: un obiect nou de tip RepoTXT cu valori implicte
 RepoTXT::RepoTXT() {
 	this->setFileName("");
 	this->loadFromFile();
@@ -73,12 +73,12 @@ void RepoTXT::loadFromFile() {
 
 			if (transport == "AV") {
 				Avion* a = new Avion(cod, plecare, destinatie, data, escala, locTot, locRez);
-				arr.addElem(a);
+				this->v.push_back(a->clone());
 				delete a;
 			}
 			else {
 				Autobuz* ab = new Autobuz(cod, plecare, destinatie, data, durata, locTot, locRez);
-				arr.addElem(ab);
+				this->v.push_back(ab->clone());
 				delete ab;
 			}
 		}
@@ -93,7 +93,7 @@ void RepoTXT::saveToFile() {
 		ofstream g(this->fileName);
 		string del = " ";
 
-		for (int i = 0; i < this->arr.getSize(); i++)
-			g << this->arr.getElemPos(i)->toString(del);
+		for (size_t i = 0; i < this->v.size(); i++)
+			g << this->v[i]->toString(del);
 	}
 }

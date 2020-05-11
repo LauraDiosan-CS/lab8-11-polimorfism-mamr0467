@@ -5,10 +5,16 @@
 #include "Avion.h"
 #include "Autobuz.h"
 #include "Array.h"
+#include <vector>
+#include "Avion.h"
+#include "Autobuz.h"
+#include "MyException.h"
+#include "DeleteException1.h"
+#include "DeleteException2.h"
 
 class RepoFile {
 protected:
-	Array arr;
+	vector<Calatorie*> v;
 	string fileName;
 public:
 	RepoFile();
@@ -20,11 +26,13 @@ public:
 
 	virtual void loadFromFile();
 	virtual void saveToFile();
-	virtual void addElem(IEntity*);
-	virtual bool delElem(IEntity*);
-	virtual bool updateElem(IEntity*, IEntity*);
-	virtual IEntity* getElemPos(int);
-	virtual IEntity** getAll();
+	virtual void addElem(Calatorie*);
+	virtual bool delElem(string);
+	virtual bool delElem(string, string);
+	virtual bool updateElem(Calatorie*, Calatorie*);
+	virtual Calatorie* getElemPos(int);
+	virtual vector<Calatorie*> getAll();
 	virtual int getSize();
+	virtual Calatorie* getByCode(string);
 	virtual void empty();
 };

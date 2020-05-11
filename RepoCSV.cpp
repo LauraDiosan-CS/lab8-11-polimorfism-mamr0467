@@ -74,12 +74,12 @@ void RepoCSV::loadFromFile() {
 
 			if (transport == "AV") {
 				Avion* a = new Avion(cod, plecare, destinatie, data, escala, locTot, locRez);
-				this->arr.addElem(a);
+				this->v.push_back(a->clone());
 				delete a;
 			}
 			else {
 				Autobuz* ab = new Autobuz(cod, plecare, destinatie, data, durata, locTot, locRez);
-				this->arr.addElem(ab);
+				this->v.push_back(ab->clone());
 				delete ab;
 			}
 		}
@@ -94,7 +94,7 @@ void RepoCSV::saveToFile() {
 		ofstream g(this->fileName);
 		string del = ",";
 
-		for (int i = 0; i < this->arr.getSize(); i++)
-			g << this->arr.getElemPos(i)->toString(del) << '\n';
+		for (size_t i = 0; i < this->v.size(); i++)
+			g << this->v[i]->toString(del) << '\n';
 	}
 }
