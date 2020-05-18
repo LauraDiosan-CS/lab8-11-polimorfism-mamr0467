@@ -1,14 +1,26 @@
 #pragma once
 #include "Service.h"
+#include "ServiceUser.h"
+#include "ValidationException.h"
+#include "MyException.h"
 
 class UI {
 private:
 	Service serv;
-	void login();
+	ServiceUser servUser;
+
+	bool login();
 	void meniu();
+	void afisareCalatorii(vector<Calatorie*>);
+	void adaugareCalatorieAvion();
+	void adaugareCalatorieAutobuz();
+	void modificareCalatorie();
+	void stergereCalatorie();
+
+	void rezervaLocuri();
+	void afisareCalatoriiAnumitaData();
 public:
 	UI();
-	UI(Service&);
 	~UI();
 	void runUI();
 };
