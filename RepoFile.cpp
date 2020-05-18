@@ -19,8 +19,8 @@ RepoFile::RepoFile(string fileName) {
 //Desc: distruge un obiect de tip RepoFile
 //In: -
 //Out: -
-RepoFile::~RepoFile(){
-	for(size_t i = 0; i < this->v.size(); i++)
+RepoFile::~RepoFile() {
+	for (size_t i = 0; i < this->v.size(); i++)
 		if (this->v[i]) {
 			delete this->v[i];
 			this->v[i] = NULL;
@@ -46,62 +46,23 @@ string RepoFile::getFileName() {
 //Out: -
 void RepoFile::loadFromFile() {
 	if (this->fileName != "") {
-		string del = "";
-		if (this->fileName.find_first_of(".txt"))
-			del = " ";
+		char del = ' ';
+		if (this->fileName.find(".txt"))
+			del = ' ';
 		else
-			del = ",";
+			del = ',';
 
 		ifstream f(this->fileName);
 		string line;
 
 		while (getline(f, line)) {
-			string transport = line.substr(0, 2);
-			int durata = 0;
-			string escala = "";
-
-			size_t pos = line.find(del);
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			string cod = line.substr(0, pos);
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			string plecare = line.substr(0, pos);
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			string destinatie = line.substr(0, pos);
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			string data = line.substr(0, pos);
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			if (transport == "AV")
-				escala = line.substr(0, pos);
-			else
-				durata = stoi(line.substr(0, pos));
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			int locTot = stoi(line.substr(0, pos));
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			int locRez = stoi(line.substr(0, pos));
-
-			if (transport == "AV") {
-				Avion* a = new Avion(cod, plecare, destinatie, data, escala, locTot, locRez);
-				this->v.push_back(a->clone());
-				delete a;
+			if (line.substr(0, 2) == "AU") {
+				Autobuz au(line, del);
+				this->v.push_back(au.clone());
 			}
 			else {
-				Autobuz* ab = new Autobuz(cod, plecare, destinatie, data, durata, locTot, locRez);
-				this->v.push_back(ab->clone());
-				delete ab;
+				Avion av(line, del);
+				this->v.push_back(av.clone());
 			}
 		}
 	}
@@ -126,21 +87,28 @@ void RepoFile::saveToFile() {
 }
 
 //Desc: adauga un nou element in RepoFile
-//In: e, IEntity*, noul element
+//In: c, Calatorie*, noul element
 //Out: -
-void RepoFile::addElem(Calatorie* e) {
-	for (int i = 0; i < this->v.size(); i++)
-		if (this->v[i]->getCod() == e->getCod())
-			throw MyException("Codul trebuie sa fie unic!");
+void RepoFile::addElem(Calatorie* c) throw(ValidationException, MyException) {
+	if (typeid(*c) == typeid(Avion)) {
+		vAvion.validate(c);
+	}
+	else if (typeid(*c) == typeid(Autobuz)) {
+		vAuto.validate(c);
+	}
 
-	this->v.push_back(e->clone());
+	//for (int i = 0; i < this->v.size(); i++)
+		//if (this->v[i]->getCod() == c->getCod())
+			//throw MyException("Codul trebuie sa fie unic!");
+
+	this->v.push_back(c->clone());
 	this->saveToFile();
 }
 
 //Desc: sterge un element din RepoFile
-//In: e, IEntity*, element de sters
+//In: e, Calatorie*, element de sters
 //Out: true, daca elementul a fost sters, false altfel
-bool RepoFile::delElem(string cod) {
+void RepoFile::delElem(string cod) throw(MyException) {
 
 	size_t i = 0;
 	while (i < this->v.size() && this->v[i]->getCod() != cod)
@@ -152,54 +120,72 @@ bool RepoFile::delElem(string cod) {
 		this->v.erase(this->v.begin() + i);
 		this->saveToFile();
 
-		return true;
+	}
+	else
+	{
+		throw MyException("Nu a putut fi gasit calatoria cu codul respectiv.");
 	}
 
-	return false;
 }
 //Desc: sterge un element din RepoFile
-//In: e, IEntity*, element de sters
+//In: e, Calatorie*, element de sters
 //Out: true, daca elementul a fost sters, false altfel
-bool RepoFile::delElem(string cod, string destinatie) {
-	for(size_t i = 0; i < v.size(); i++)
+void RepoFile::delElem(string cod, string destinatie) {
+	bool rez = false;
+
+	size_t i = 0;
+	while (i < this->v.size() && this->v[i]->getCod() != cod)
+		i++;
+	if (i < this->v.size()) {
+		if (v[i]->getDestinatie() == destinatie) {
+			delete this->v[i];
+			this->v[i] = NULL;
+			this->v.erase(this->v.begin() + i);
+			this->saveToFile();
+		}
+		else
+			throw DeleteException1("");
+	}
+	else
+	{
+		throw DeleteException2("");
+	}
+
+	/*
+	for (size_t i = 0; i < v.size(); i++) {
 		if (this->v[i]->getCod() == cod) {
 			if (this->v[i]->getDestinatie() == destinatie) {
 				delete this->v[i];
 				this->v[i] = NULL;
 				this->v.erase(this->v.begin() + i);
-				this->saveToFile();
 
-				return true;
+				rez = true;
+				this->saveToFile();
 			}
 			else {
 				throw DeleteException1("");
 			}
 		}
-	throw DeleteException2("");
-
-
-	/*
-	size_t i = 0;
-	while (i < this->v.size() && this->v[i]->getCod() != cod)
-		i++;
-	
-	if (i < this->v.size()) {
-		delete this->v[i];
-		this->v[i] = NULL;
-		this->v.erase(this->v.begin() + i);
-		this->saveToFile();
-
-		return true;
+		if (this->v[i]->getDestinatie() == destinatie)
+			rez = true;
 	}
 
-	return false;*/
+	if(rez == false)
+		throw DeleteException2("");*/
 }
 
 //Desc: modifica un element din RepoFile
-//In: eVechi, IEntity* - elementul de modificat
-//	  eNou, IEntity* - elementul cu care este modificat elementul vechi
+//In: eVechi, Calatorie* - elementul de modificat
+//	  eNou, Calatorie* - elementul cu care este modificat elementul vechi
 //Out: true, daca elementul a fost modificat, false altfel
-bool RepoFile::updateElem(Calatorie* eVechi, Calatorie* eNou) {
+void RepoFile::updateElem(Calatorie* eVechi, Calatorie* eNou) throw(ValidationException, MyException) {
+	if (typeid(*eNou) == typeid(Avion)) {
+		vAvion.validate(eNou);
+	}
+	else if (typeid(*eNou) == typeid(Autobuz)) {
+		vAuto.validate(eNou);
+	}
+
 	size_t i = 0;
 	while (i < this->v.size() && *(this->v[i]) != *eVechi)
 		i++;
@@ -212,17 +198,43 @@ bool RepoFile::updateElem(Calatorie* eVechi, Calatorie* eNou) {
 		this->v.erase(this->v.begin() + i);
 		this->v.push_back(eNou->clone());
 		this->saveToFile();
+	}
+	else
+	{
+		throw MyException("Nu a putut fi gasita calatoria pentru update.");
+	}
+}
 
-		return true;
+void RepoFile::update(Calatorie* eVechi, Calatorie* eNou) throw(ValidationException, MyException) {
+	if (typeid(*eNou) == typeid(Avion)) {
+		vAvion.validate(eNou);
+	}
+	else if (typeid(*eNou) == typeid(Autobuz)) {
+		vAuto.validate(eNou);
 	}
 
-	return false;
+	size_t i = 0;
+	while (i < this->v.size() && *(this->v[i]) != *eVechi)
+		i++;
+	if (i < this->v.size()) {
+		if (this->v[i]) {
+			delete this->v[i];
+			this->v[i] = NULL;
+		}
+
+		this->v[i] = eNou->clone();
+		this->saveToFile();
+	}
+	else
+	{
+		throw MyException("Nu a putut fi gasita calatoria pentru update.");
+	}
 }
 
 //Desc: acceseaza elementul de pe o anumita pozitie din repoFile
 //In: pos, int - pozitia elementului
-//Out: eleementul de pe positia pos
-Calatorie* RepoFile::getElemPos(int pos) {
+//Out: elementul de pe positia pos
+Calatorie* RepoFile::getElemPos(int pos) throw(MyException) {
 	if (pos < 0 || pos >= this->v.size())
 		throw MyException("Pozitia este in afara indecsilor admisi!");
 
@@ -269,4 +281,21 @@ Calatorie* RepoFile::getByCode(string cod) {
 //Out: lungimea listei de elemente
 int RepoFile::getSize() {
 	return this->v.size();
+}
+
+RepoFile& RepoFile::operator=(const RepoFile& repo) {
+	this->fileName = repo.fileName;
+
+	return *this;
+}
+
+void RepoFile::deletee(Calatorie* ca) {
+	for(size_t i = 0; i < this->v.size(); i++)
+		if (this->v[i]->equals(ca)) {
+			delete this->v[i];
+			this->v[i] = NULL;
+			this->v.erase(this->v.begin() + i);
+
+			return;
+		}
 }

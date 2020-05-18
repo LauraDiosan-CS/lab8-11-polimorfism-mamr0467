@@ -28,6 +28,17 @@ Autobuz::Autobuz(const Autobuz& a) : Calatorie(a) {
 	this->durata = a.durata;
 }
 
+Autobuz::Autobuz(string line, char delim) {
+	vector<string> words = split(line, delim);
+	this->cod = words[1];
+	this->plecare = words[2];
+	this->destinatie = words[3];
+	this->data = words[4];
+	this->durata = stoi(words[5]);
+	this->nrTotLoc = stoi(words[6]);
+	this->nrLocRez = stoi(words[7]);
+}
+
 //Desc: distruge un obiect de tip Autobuz
 //In: -
 //Out: -

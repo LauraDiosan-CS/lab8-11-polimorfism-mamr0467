@@ -1,0 +1,4 @@
+AU 2y romania bruxelles 20/12/2020 14888728 400 50
+AU 3z cluj ferentari 20/03/2021 17696096 140 135
+AV 2Ap timisoara bucuresti 10/03/2020 da 243 187
+AU 2p gherla2 brasov2 1/10/2021 18981232 1000 1000

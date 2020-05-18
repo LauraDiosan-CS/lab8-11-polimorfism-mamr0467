@@ -27,59 +27,20 @@ RepoTXT::~RepoTXT()
 //In: -
 //Out: -
 void RepoTXT::loadFromFile() {
-	if (this->fileName!= "") {
-		string del = " ";
+	if (this->fileName != "") {
+		char del = ' ';
 
 		ifstream f(this->fileName);
 		string line;
 
 		while (getline(f, line)) {
-			string transport = line.substr(0, 2);
-			int durata = 0;
-			string escala = "";
-
-			size_t pos = line.find(del);
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			string cod = line.substr(0, pos);
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			string plecare = line.substr(0, pos);
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			string destinatie = line.substr(0, pos);
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			string data = line.substr(0, pos);
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			if (transport == "AV")
-				escala = line.substr(0, pos);
-			else
-				durata = stoi(line.substr(0, pos));
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			int locTot = stoi(line.substr(0, pos));
-			line.erase(0, pos + 1);
-
-			pos = line.find(del);
-			int locRez = stoi(line.substr(0, pos));
-
-			if (transport == "AV") {
-				Avion* a = new Avion(cod, plecare, destinatie, data, escala, locTot, locRez);
-				this->v.push_back(a->clone());
-				delete a;
+			if (line.substr(0, 2) == "AU") {
+				Autobuz au(line, del);
+				this->v.push_back(au.clone());
 			}
 			else {
-				Autobuz* ab = new Autobuz(cod, plecare, destinatie, data, durata, locTot, locRez);
-				this->v.push_back(ab->clone());
-				delete ab;
+				Avion av(line, del);
+				this->v.push_back(av.clone());
 			}
 		}
 	}
@@ -94,6 +55,6 @@ void RepoTXT::saveToFile() {
 		string del = " ";
 
 		for (size_t i = 0; i < this->v.size(); i++)
-			g << this->v[i]->toString(del);
+			g << this->v[i]->toString(del) << '\n';
 	}
 }

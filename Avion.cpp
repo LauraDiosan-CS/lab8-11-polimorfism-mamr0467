@@ -28,6 +28,17 @@ Avion::Avion(const Avion& a) : Calatorie(a) {
 	this->escala = a.escala;
 }
 
+Avion::Avion(string line, char delim) {
+	vector<string> words = split(line, delim);
+	this->cod = words[1];
+	this->plecare = words[2];
+	this->destinatie = words[3];
+	this->data = words[4];
+	this->escala = words[5];
+	this->nrTotLoc = stoi(words[6]);
+	this->nrLocRez = stoi(words[7]);
+}
+
 //Desc: distruge un obiect de tip avion
 //In: -
 //Out: -

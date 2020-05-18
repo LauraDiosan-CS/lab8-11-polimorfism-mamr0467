@@ -2,20 +2,20 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "Avion.h"
-#include "Autobuz.h"
-#include "Array.h"
 #include <vector>
-#include "Avion.h"
-#include "Autobuz.h"
 #include "MyException.h"
 #include "DeleteException1.h"
 #include "DeleteException2.h"
+#include "ValidatorAutobuz.h"
+#include "ValidatorAvion.h"
+#include <typeinfo>
 
 class RepoFile {
 protected:
 	vector<Calatorie*> v;
 	string fileName;
+	ValidatorAvion vAvion;
+	ValidatorAutobuz vAuto;
 public:
 	RepoFile();
 	RepoFile(string);
@@ -24,12 +24,15 @@ public:
 	virtual void setFileName(string);
 	virtual string getFileName();
 
+	virtual RepoFile& operator=(const RepoFile&);
 	virtual void loadFromFile();
 	virtual void saveToFile();
 	virtual void addElem(Calatorie*);
-	virtual bool delElem(string);
-	virtual bool delElem(string, string);
-	virtual bool updateElem(Calatorie*, Calatorie*);
+	virtual void delElem(string);
+	virtual void delElem(string, string);
+	virtual void deletee(Calatorie*);
+	virtual void updateElem(Calatorie*, Calatorie*);
+	virtual void update(Calatorie*, Calatorie*);
 	virtual Calatorie* getElemPos(int);
 	virtual vector<Calatorie*> getAll();
 	virtual int getSize();

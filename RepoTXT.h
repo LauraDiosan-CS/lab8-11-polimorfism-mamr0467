@@ -14,6 +14,7 @@ public:
 	RepoTXT(string);
 	~RepoTXT();
 
+
 	void loadFromFile() override;
 	void saveToFile() override;
 };

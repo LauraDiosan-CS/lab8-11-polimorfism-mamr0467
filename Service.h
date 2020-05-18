@@ -19,12 +19,17 @@ public:
 	void SetRepo(RepoFile*);
 	void addElem(string, string, string, string, string, int, int);
 	void addElem(string, string, string, string, int, int, int);
-	bool delElem(string);
-	bool updateElem(string, string, string, string, string, int, int);
-	bool updateElem(string, string, string, string, int, int, int);
+	void add(Calatorie*);
+	void delElem(string);
+	void updateElem(string, string, string, string, string, int, int);
+	void updateElem(string, string, string, string, int, int, int);
+	void deletee(Calatorie*);
 	int getSize();
 	Calatorie* getElemByPos(int);
 	vector<Calatorie*> getAll();
 
 	void empty();
+
+	vector<Calatorie*> calatoriiAnumitaData(string);
+	void rezervaLocuri(string, int);
 };

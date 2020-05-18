@@ -3,6 +3,7 @@
 #include "IEntity.h"
 #include "Calatorie.h"
 #include <string>
+#include "Util.h"
 
 class Autobuz : public Calatorie {
 private:
@@ -11,6 +12,7 @@ public:
 	Autobuz();
 	Autobuz(string, string, string, string, int, int, int);
 	Autobuz(const Autobuz&);
+	Autobuz(string, char);
 	~Autobuz();
 
 	void setDurata(int);
