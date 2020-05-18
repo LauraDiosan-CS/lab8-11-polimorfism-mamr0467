@@ -32,8 +32,8 @@ void TestRepoFile::testDel() {
 	try {
 		r.addElem(&a);
 		assert(r.getSize() == 1);
-		bool rez = r.delElem("1", "ferentari");
-		assert(rez == true && r.getSize() == 0);
+		r.delElem("1", "ferentari");
+		assert(r.getSize() == 0);
 	}
 	catch (MyException& exc) {
 		cout << exc.getMessage() << '\n';
@@ -48,7 +48,7 @@ void TestRepoFile::testUpdate() {
 	Avion a2("2", "mangalia", "cluj", "1", "nu", 133, 75);
 	try {
 		r.addElem(&a);
-		bool rez = r.updateElem(&a, &a2);
+		r.updateElem(&a, &a2);
 		assert(r.getElemPos(0)->equals(&a2));
 	}
 	catch (MyException& exc) {
@@ -162,7 +162,7 @@ void TestRepoFile::cerintaExceptii() {
 	}
 
 
-	/*
+	
 	try {
 		repo.delElem("156", "Paris");
 		assert(false);
@@ -172,7 +172,7 @@ void TestRepoFile::cerintaExceptii() {
 	}
 	catch (DeleteException1& exc1) {
 		assert(false);
-	}*/
+	}
 
 
 
