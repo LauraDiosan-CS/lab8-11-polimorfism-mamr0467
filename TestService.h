@@ -8,6 +8,8 @@ private:
 	void testAdd();
 	void testDelete();
 	void testUpdate();
+	void testRezervaLocuri();
+	void testCalatoriiAnumitaData();
 public:
 	void testAll();
 };
